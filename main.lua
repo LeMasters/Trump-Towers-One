@@ -7,13 +7,15 @@ poetics of mobile, etc., etc.
 
 Let's draw a building and add some windows.
 
-This code calculates all of the measurements necessary for the layout of my building... but it does those calculations as if the building were located in the upper left-hand corner of the screen.  In essence, then, we construct a "virtual" building, stuff the relative-coordinates of its windows into a table, and then return that table to whomever called us in the first place.  It is up to them to (1) figure out where on the screen the building goes and then (2) draw our windows on top of their building.
+This code calculates all of the measurements necessary for the layout of my building... but it does those calculations as if the building were located in the upper left-hand corner of the screen.  In essence, then, we construct a "virtual" building... we'll have to save the process of creating and re-creating that virtual building for later.
+
 
 ]]--
 
 local function installWindows( bW, bRC, bH, bFC )
 
 -- To start the function, I pass width, room count, height, floor count to installWindows().
+
 -- I used short variable names inside the parentheses just to keep things neat.  We don't have to do this, but for clarity's sake, let's transfer the stuff stored in those short names to the "real" variables:
 
 	local bldgWidth = bW
@@ -21,50 +23,26 @@ local function installWindows( bW, bRC, bH, bFC )
 	local bldgFloorCount = bFC
 	local bldgRoomCount = bRC
 
-	-- Writing interesting code means always trying to rethink the world
-	-- in numeric terms.  Its a challenge, especially for those of us who
-	-- never got past advanced algebra:  It seemed so difficult at the time.
-	-- It turns out, according to scholars like Seymour Papert, that it
-	-- wasn't my fault that algebra seemed so alien, it was the fault of
-	-- modern curricula.  Math, he says, should be intuitive, and pleasurable.
-	-- When I became more serious about my code while I was in grad school,
-	-- I suddenly discovered what Papert means:  For lack of a better term,
-	-- it is genuinely fun to think about how audio compression works, or
-	-- how to increase the contrast on a scanned photograph, or even how
-	-- to model a tiny economy in a lemonade stand simulator.
+-- Writing interesting code means always trying to rethink the world in numeric terms.  Its a challenge, especially for those of us who never got past advanced algebra:  It seemed so difficult at the time. It turns out, according to scholars like Seymour Papert, that it wasn't my fault that algebra seemed so alien, it was the fault of modern curricula.  Math, he says, should be intuitive, and pleasurable. When I became more serious about my code while I was in grad school, I suddenly discovered what Papert means:  For lack of a better term, it is genuinely fun to think about how audio compression works, or how to increase the contrast on a scanned photograph, or even how to model a tiny economy in a lemonade stand simulator.
 
-	-- So based on the four numbers we know, let's see what we can posit.
+--So based on the four numbers we know, let's see what we can posit.  Presently, we don't know (1) where the windows are on the building, or (2) how big they are.  So let's define that second part ourselves.  Let's do it by creating a ratio: If window is 1/2 width of room:
 
-	-- Presently, we don't know (1) where the windows are on the building,
-	-- or (2) how big they are.  So let's define that second part ourselves.
+	local windowWidthToRoomWidthRatio = 1 / 2 -- (or 0.5) this means, simply, that to find the window's width, we merely multiply the room's width by our ratio (e.g., multiply it by 0.5).
 
-	-- Let's do it by creating a ratio:
-	-- If window is 1/2 width of room:
-	local windowWidthToRoomWidthRatio = 1 / 2 -- (or 0.5)
-	-- this means, simply, that to find the window's width, we merely
-	-- multiply the room's width by our ratio (e.g., multiply it by 0.5).
-
-	-- same deal:
+-- same deal:
 	local windowHeightToFloorHeightRatio = 1 / 2 -- again, 0.5
 
-	-- See if you can tell what these do.  The math.round() function, obviously,
-	-- takes a floating-point number (e.g., 3.175) and changes it to an integer
-	-- (e.g., 3).  Since the addresses on the screen are all whole numbers,
-	-- decimal points are usually (but not always) useless.
+-- See if you can tell what these do.  The math.round() function, obviously, takes a floating-point number (e.g., 3.175) and changes it to an integer (e.g., 3).  Since the addresses on the screen are all whole numbers, decimal points are usually (but not always) useless.
 
 	local bldgRoomWidth = math.round( bldgWidth / bldgRoomCount )
 	local bldgFloorHeight = math.round( bldgHeight / bldgFloorCount )
 
-	-- Given the width of the building, and the number of rooms, it is relatively
-	-- easy to discern the width of each room.  Which means, thank you very much,
-	-- that by using our ratio (from above), we also know the window width.
+-- Given the width of the building, and the number of rooms, it is relatively easy to discern the width of each room.  Which means, thank you very much, that by using our ratio (from above), we also know the window width.
 
 	local bldgWindowWidth = math.round( bldgRoomWidth * windowWidthToRoomWidthRatio )
 	local bldgWindowHeight = math.round( bldgFloorHeight * windowHeightToFloorHeightRatio )
 
-	-- To reiterate:  With this approach, everything is RELATIVE.  bldgCenterX
-	-- assumes that the building starts at x=0.  Now roomCenterX assumes the same thing:
-	-- that this room is as far to the left (x=0) as possible.
+-- To reiterate:  With this approach, everything is RELATIVE.  bldgCenterX assumes that the building starts at x=0.  Now roomCenterX assumes the same thing: that this room is as far to the left (x=0) as possible.
 
 	local roomCenterX = bldgRoomWidth * 0.50
 	local roomCenterY = bldgFloorHeight * 0.50
@@ -133,6 +111,5 @@ bldgShell.fill = { .3, .3, .36 }
 -- (note that the arguments for my installWindows() function do NOT line up with those of the newRect() function.  Your comments will be important here, in order to remind yourself of the order in which the arguments are presented.
 
 installWindows( 300, 6, 750, 13 ) -- I can provide fill info directly, too
-
 
 -- Now:  We're stuck.  We can't move this building, nor can we move the windows, nor can we adjust the lighting from any of the rooms.  This just got things onto the screen.  Happily, this was the vast bulk of the work, and moving the building, etc., won't take much more effort.
