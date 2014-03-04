@@ -1,8 +1,7 @@
 --[[
 
-glemasters
+glemasters, georgetown CCT,
 poetics of mobile, etc., etc.
-
 
 
 Let's draw a building and add some windows.
@@ -30,6 +29,7 @@ local function installWindows( bW, bRC, bH, bFC )
 	local windowWidthToRoomWidthRatio = 1 / 2 -- (or 0.5) this means, simply, that to find the window's width, we merely multiply the room's width by our ratio (e.g., multiply it by 0.5).
 
 -- same deal:
+
 	local windowHeightToFloorHeightRatio = 1 / 2 -- again, 0.5
 
 -- See if you can tell what these do.  The math.round() function, obviously, takes a floating-point number (e.g., 3.175) and changes it to an integer (e.g., 3).  Since the addresses on the screen are all whole numbers, decimal points are usually (but not always) useless.
